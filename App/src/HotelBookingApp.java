@@ -2,31 +2,26 @@ public class HotelBookingApp {
 
     public static void main(String[] args) {
 
-        System.out.println("Booking Request Queue\n");
+        System.out.println("Room Allocation Processing\n");
 
-        // Initialize queue
-        BookingRequestQueue bookingQueue = new BookingRequestQueue();
+        // Inventory
+        RoomInventory inventory = new RoomInventory();
 
-        // Create requests
-        Reservation r1 = new Reservation("Abhi", "Single");
-        Reservation r2 = new Reservation("Subha", "Double");
-        Reservation r3 = new Reservation("Vanmathi", "Suite");
+        // Queue
+        BookingRequestQueue queue = new BookingRequestQueue();
 
-        // Add to queue
-        bookingQueue.addRequest(r1);
-        bookingQueue.addRequest(r2);
-        bookingQueue.addRequest(r3);
+        // Add requests
+        queue.addRequest(new Reservation("Abhi", "Single"));
+        queue.addRequest(new Reservation("Subha", "Single"));
+        queue.addRequest(new Reservation("Vanmathi", "Suite"));
 
-        // Process requests (FIFO)
-        while (bookingQueue.hasPendingRequests()) {
-            Reservation current = bookingQueue.getNextRequest();
+        // Allocation service
+        RoomAllocationService allocationService = new RoomAllocationService();
 
-            System.out.println(
-                    "Processing booking for Guest: " +
-                            current.getGuestName() +
-                            ", Room Type: " +
-                            current.getRoomType()
-            );
+        // Process queue (FIFO)
+        while (queue.hasPendingRequests()) {
+            Reservation request = queue.getNextRequest();
+            allocationService.allocateRoom(request, inventory);
         }
     }
 }
