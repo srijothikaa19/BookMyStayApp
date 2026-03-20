@@ -1,32 +1,32 @@
-/**
- * MAIN CLASS: UseCase4RoomSearch
- *
- * Demonstrates read-only room search
- *
- * @version 4.0
- */
-
 public class HotelBookingApp {
 
     public static void main(String[] args) {
 
-        // Create room objects
-        Room single = new SingleRoom();
-        Room doubleRoom = new DoubleRoom();
-        Room suite = new SuiteRoom();
+        System.out.println("Booking Request Queue\n");
 
-        // Initialize inventory
-        RoomInventory inventory = new RoomInventory();
+        // Initialize queue
+        BookingRequestQueue bookingQueue = new BookingRequestQueue();
 
-        // Create search service
-        RoomSearchService searchService = new RoomSearchService();
+        // Create requests
+        Reservation r1 = new Reservation("Abhi", "Single");
+        Reservation r2 = new Reservation("Subha", "Double");
+        Reservation r3 = new Reservation("Vanmathi", "Suite");
 
-        // Perform search
-        searchService.searchAvailableRooms(
-                inventory,
-                single,
-                doubleRoom,
-                suite
-        );
+        // Add to queue
+        bookingQueue.addRequest(r1);
+        bookingQueue.addRequest(r2);
+        bookingQueue.addRequest(r3);
+
+        // Process requests (FIFO)
+        while (bookingQueue.hasPendingRequests()) {
+            Reservation current = bookingQueue.getNextRequest();
+
+            System.out.println(
+                    "Processing booking for Guest: " +
+                            current.getGuestName() +
+                            ", Room Type: " +
+                            current.getRoomType()
+            );
+        }
     }
 }
