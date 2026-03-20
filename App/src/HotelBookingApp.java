@@ -1,16 +1,14 @@
 /**
- * MAIN CLASS: UseCase3InventorySetup
+ * MAIN CLASS: UseCase4RoomSearch
  *
- * Demonstrates centralized inventory management
+ * Demonstrates read-only room search
  *
- * @version 3.1
+ * @version 4.0
  */
 
 public class HotelBookingApp {
 
     public static void main(String[] args) {
-
-        System.out.println("Hotel Room Inventory Status\n");
 
         // Create room objects
         Room single = new SingleRoom();
@@ -20,19 +18,15 @@ public class HotelBookingApp {
         // Initialize inventory
         RoomInventory inventory = new RoomInventory();
 
-        // Display Single Room
-        System.out.println("Single Room:");
-        single.displayRoomDetails();
-        System.out.println("Available Rooms: " + inventory.getAvailability("Single") + "\n");
+        // Create search service
+        RoomSearchService searchService = new RoomSearchService();
 
-        // Display Double Room
-        System.out.println("Double Room:");
-        doubleRoom.displayRoomDetails();
-        System.out.println("Available Rooms: " + inventory.getAvailability("Double") + "\n");
-
-        // Display Suite Room
-        System.out.println("Suite Room:");
-        suite.displayRoomDetails();
-        System.out.println("Available Rooms: " + inventory.getAvailability("Suite"));
+        // Perform search
+        searchService.searchAvailableRooms(
+                inventory,
+                single,
+                doubleRoom,
+                suite
+        );
     }
 }
