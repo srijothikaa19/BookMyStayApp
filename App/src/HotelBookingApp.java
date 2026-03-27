@@ -2,26 +2,27 @@ public class HotelBookingApp {
 
     public static void main(String[] args) {
 
-        System.out.println("Room Allocation Processing\n");
+        System.out.println("Add-On Service Selection\n");
 
-        // Inventory
-        RoomInventory inventory = new RoomInventory();
+        // Assume this came from UC6 allocation
+        String reservationId = "Single-1";
 
-        // Queue
-        BookingRequestQueue queue = new BookingRequestQueue();
+        // Create services
+        AddOnService breakfast = new AddOnService("Breakfast", 500.0);
+        AddOnService spa = new AddOnService("Spa", 1000.0);
 
-        // Add requests
-        queue.addRequest(new Reservation("Abhi", "Single"));
-        queue.addRequest(new Reservation("Subha", "Single"));
-        queue.addRequest(new Reservation("Vanmathi", "Suite"));
+        // Service manager
+        AddOnServiceManager manager = new AddOnServiceManager();
 
-        // Allocation service
-        RoomAllocationService allocationService = new RoomAllocationService();
+        // Attach services
+        manager.addService(reservationId, breakfast);
+        manager.addService(reservationId, spa);
 
-        // Process queue (FIFO)
-        while (queue.hasPendingRequests()) {
-            Reservation request = queue.getNextRequest();
-            allocationService.allocateRoom(request, inventory);
-        }
+        // Calculate total
+        double totalCost = manager.calculateTotalServiceCost(reservationId);
+
+        // Output
+        System.out.println("Reservation ID: " + reservationId);
+        System.out.println("Total Add-On Cost: " + totalCost);
     }
 }
