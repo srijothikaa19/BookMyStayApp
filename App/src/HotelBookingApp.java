@@ -2,28 +2,44 @@ public class HotelBookingApp {
 
     public static void main(String[] args) {
 
-        System.out.println("Booking Cancellation\n");
+        System.out.println("Concurrent Booking Simulation\n");
 
-        // Inventory
+        // Shared resources
         RoomInventory inventory = new RoomInventory();
+        BookingRequestQueue bookingQueue = new BookingRequestQueue();
+        RoomAllocationService allocationService = new RoomAllocationService();
 
-        // Cancellation service
-        CancellationService cancelService = new CancellationService();
+        // Add booking requests
+        bookingQueue.addRequest(new Reservation("Abhi", "Single"));
+        bookingQueue.addRequest(new Reservation("Vanmathi", "Double"));
+        bookingQueue.addRequest(new Reservation("Kural", "Suite"));
+        bookingQueue.addRequest(new Reservation("Subha", "Single"));
 
-        // Simulate confirmed booking (from UC6)
-        String reservationId = "Single-1";
-        String roomType = "Single";
+        // Create threads
+        Thread t1 = new Thread(
+                new ConcurrentBookingProcessor(bookingQueue, inventory, allocationService)
+        );
 
-        cancelService.registerBooking(reservationId, roomType);
+        Thread t2 = new Thread(
+                new ConcurrentBookingProcessor(bookingQueue, inventory, allocationService)
+        );
 
-        // Cancel booking
-        cancelService.cancelBooking(reservationId, inventory);
+        // Start threads
+        t1.start();
+        t2.start();
 
-        // Show rollback history
-        cancelService.showRollbackHistory();
+        // Wait for completion
+        try {
+            t1.join();
+            t2.join();
+        } catch (InterruptedException e) {
+            System.out.println("Thread execution interrupted.");
+        }
 
-        // Show updated inventory
-        int updated = inventory.getAvailability("Single");
-        System.out.println("\nUpdated Single Room Availability: " + updated);
+        // Display remaining inventory
+        System.out.println("\nRemaining Inventory:");
+        System.out.println("Single: " + inventory.getAvailability("Single"));
+        System.out.println("Double: " + inventory.getAvailability("Double"));
+        System.out.println("Suite: " + inventory.getAvailability("Suite"));
     }
 }
