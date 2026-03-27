@@ -1,44 +1,29 @@
-import java.util.Scanner;
-
 public class HotelBookingApp {
 
     public static void main(String[] args) {
 
-        System.out.println("Booking Validation\n");
+        System.out.println("Booking Cancellation\n");
 
-        Scanner scanner = new Scanner(System.in);
-
-        // Initialize components
+        // Inventory
         RoomInventory inventory = new RoomInventory();
-        ReservationValidator validator = new ReservationValidator();
-        BookingRequestQueue bookingQueue = new BookingRequestQueue();
 
-        try {
-            // User input
-            System.out.print("Enter guest name: ");
-            String guestName = scanner.nextLine();
+        // Cancellation service
+        CancellationService cancelService = new CancellationService();
 
-            System.out.print("Enter room type (Single/Double/Suite): ");
-            String roomType = scanner.nextLine();
+        // Simulate confirmed booking (from UC6)
+        String reservationId = "Single-1";
+        String roomType = "Single";
 
-            // Validate input
-            validator.validate(guestName, roomType, inventory);
+        cancelService.registerBooking(reservationId, roomType);
 
-            // If validation passes → create reservation
-            Reservation reservation =
-                    new Reservation(guestName, roomType);
+        // Cancel booking
+        cancelService.cancelBooking(reservationId, inventory);
 
-            bookingQueue.addRequest(reservation);
+        // Show rollback history
+        cancelService.showRollbackHistory();
 
-            System.out.println("Booking request accepted!");
-
-        } catch (InvalidBookingException e) {
-
-            // Graceful failure
-            System.out.println("Booking failed: " + e.getMessage());
-
-        } finally {
-            scanner.close();
-        }
+        // Show updated inventory
+        int updated = inventory.getAvailability("Single");
+        System.out.println("\nUpdated Single Room Availability: " + updated);
     }
 }
